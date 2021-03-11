@@ -1,0 +1,1269 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Note\n",
+    "* Instructions have been included for each segment. You do not have to follow them exactly, but they are included to help you think through the steps."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "   Purchase ID             SN  Age Gender  Item ID  \\\n",
+       "0            0        Lisim78   20   Male      108   \n",
+       "1            1    Lisovynya38   40   Male      143   \n",
+       "2            2     Ithergue48   24   Male       92   \n",
+       "3            3  Chamassasya86   24   Male      100   \n",
+       "4            4      Iskosia90   23   Male      131   \n",
+       "\n",
+       "                                   Item Name  Price  \n",
+       "0  Extraction, Quickblade Of Trembling Hands   3.53  \n",
+       "1                          Frenzied Scimitar   1.56  \n",
+       "2                               Final Critic   4.88  \n",
+       "3                                Blindscythe   3.27  \n",
+       "4                                       Fury   1.44  "
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Purchase ID</th>\n      <th>SN</th>\n      <th>Age</th>\n      <th>Gender</th>\n      <th>Item ID</th>\n      <th>Item Name</th>\n      <th>Price</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>0</td>\n      <td>Lisim78</td>\n      <td>20</td>\n      <td>Male</td>\n      <td>108</td>\n      <td>Extraction, Quickblade Of Trembling Hands</td>\n      <td>3.53</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>1</td>\n      <td>Lisovynya38</td>\n      <td>40</td>\n      <td>Male</td>\n      <td>143</td>\n      <td>Frenzied Scimitar</td>\n      <td>1.56</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>2</td>\n      <td>Ithergue48</td>\n      <td>24</td>\n      <td>Male</td>\n      <td>92</td>\n      <td>Final Critic</td>\n      <td>4.88</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>3</td>\n      <td>Chamassasya86</td>\n      <td>24</td>\n      <td>Male</td>\n      <td>100</td>\n      <td>Blindscythe</td>\n      <td>3.27</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>4</td>\n      <td>Iskosia90</td>\n      <td>23</td>\n      <td>Male</td>\n      <td>131</td>\n      <td>Fury</td>\n      <td>1.44</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 1
+    }
+   ],
+   "source": [
+    "# Dependencies and Setup\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import csv\n",
+    "\n",
+    "\n",
+    "# File to Load (Remember to Change These)\n",
+    "purchase_csv = \"Resources/purchase_data.csv\"\n",
+    "\n",
+    "# Read Purchasing File and store into Pandas data frame\n",
+    "purchase_data_df = pd.read_csv(purchase_csv, encoding=\"utf-8\")\n",
+    "\n",
+    "purchase_data_df.head()\n",
+    "#purchase_data_df.tail()\n",
+    "#purchase_data.columns\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "stream",
+     "name": "stdout",
+     "text": [
+      "       Purchase ID         Age     Item ID       Price\ncount   780.000000  780.000000  780.000000  780.000000\nmean    389.500000   22.714103   91.755128    3.050987\nstd     225.310896    6.659444   52.697702    1.169549\nmin       0.000000    7.000000    0.000000    1.000000\n25%     194.750000   20.000000   47.750000    1.980000\n50%     389.500000   22.000000   92.000000    3.150000\n75%     584.250000   25.000000  138.000000    4.080000\nmax     779.000000   45.000000  183.000000    4.990000\n\n\nPurchase ID    780\nSN             780\nAge            780\nGender         780\nItem ID        780\nItem Name      780\nPrice          780\ndtype: int64\n\n\n   Purchase ID             SN  Age Gender  Item ID  \\\n0            0        Lisim78   20   Male      108   \n1            1    Lisovynya38   40   Male      143   \n2            2     Ithergue48   24   Male       92   \n3            3  Chamassasya86   24   Male      100   \n4            4      Iskosia90   23   Male      131   \n\n                                   Item Name  Price  \n0  Extraction, Quickblade Of Trembling Hands   3.53  \n1                          Frenzied Scimitar   1.56  \n2                               Final Critic   4.88  \n3                                Blindscythe   3.27  \n4                                       Fury   1.44  \n\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Check to see overall summary of data being used\n",
+    "print(purchase_data_df.describe())\n",
+    "print()\n",
+    "print()\n",
+    "\n",
+    "# Check to see if all values are the same length\n",
+    "print(purchase_data_df.count())\n",
+    "print()\n",
+    "print()\n",
+    "\n",
+    "# Print sample of data to see columns and data variables \n",
+    "print(purchase_data_df.head())\n",
+    "print()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Player Count"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Display the total number of players\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "   Total Players\n",
+       "0            576"
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Total Players</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>576</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 3
+    }
+   ],
+   "source": [
+    "UniqPlayers = purchase_data_df[\"SN\"].nunique()\n",
+    "UniqPlayers\n",
+    "\n",
+    "Total_Players_DF = pd.DataFrame({\"Total Players\":[UniqPlayers]}) \n",
+    "Total_Players_DF\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Purchasing Analysis (Total)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Run basic calculations to obtain number of unique items, average price, etc.\n",
+    "\n",
+    "\n",
+    "* Create a summary data frame to hold the results\n",
+    "\n",
+    "\n",
+    "* Optional: give the displayed data cleaner formatting\n",
+    "\n",
+    "\n",
+    "* Display the summary data frame\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "output_type": "stream",
+     "name": "stdout",
+     "text": [
+      "Purchase ID      int64\nSN              object\nAge              int64\nGender          object\nItem ID          int64\nItem Name       object\nPrice          float64\ndtype: object\n\n   Purchase ID             SN  Age Gender  Item ID  \\\n0            0        Lisim78   20   Male      108   \n1            1    Lisovynya38   40   Male      143   \n2            2     Ithergue48   24   Male       92   \n3            3  Chamassasya86   24   Male      100   \n4            4      Iskosia90   23   Male      131   \n\n                                   Item Name  Price  \n0  Extraction, Quickblade Of Trembling Hands   3.53  \n1                          Frenzied Scimitar   1.56  \n2                               Final Critic   4.88  \n3                                Blindscythe   3.27  \n4                                       Fury   1.44  \n\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Check data types of columns\n",
+    "print(purchase_data_df.dtypes)\n",
+    "print()\n",
+    "print() # using for spacing in output\n",
+    "\n",
+    "# Dataframe Reference\n",
+    "print(purchase_data_df.head())\n",
+    "print()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "stream",
+     "name": "stdout",
+     "text": [
+      "UniqItemCount:  179\nAvgPrice:  $3.05\nPurchaseCount:  780\nPurchaseTotal:  $2379.77\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Purchase Analysis variables\n",
+    "UniqItems = purchase_data_df[\"Item Name\"]\n",
+    "UniqItemCount = (len(UniqItems.value_counts()))\n",
+    "print(f'UniqItemCount:  {UniqItemCount}')\n",
+    "\n",
+    "\n",
+    "AvgPrice = round(purchase_data_df[\"Price\"].mean(),2)\n",
+    "print(f'AvgPrice:  ${AvgPrice}')\n",
+    "\n",
+    "PurchaseCount = purchase_data_df[\"Purchase ID\"].value_counts()\n",
+    "PurchaseCount = len(PurchaseCount)\n",
+    "print(f'PurchaseCount:  {PurchaseCount}')\n",
+    "\n",
+    "PurchaseTotal = purchase_data_df[\"Price\"].sum()\n",
+    "print(f'PurchaseTotal:  ${PurchaseTotal}')\n",
+    "\n",
+    "# print statements are not need to run, just in case of debugging but outputs are as follows"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "stream",
+     "name": "stdout",
+     "text": [
+      "Number of Unique Items      int64\nAverage Price             float64\nNumber of Purchases         int64\nTotal Revenue             float64\ndtype: object\n\n"
+     ]
+    },
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "   Number of Unique Items Average Price  Number of Purchases Total Revenue\n",
+       "0                     179         $3.05                  780     $2,379.77"
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Number of Unique Items</th>\n      <th>Average Price</th>\n      <th>Number of Purchases</th>\n      <th>Total Revenue</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>179</td>\n      <td>$3.05</td>\n      <td>780</td>\n      <td>$2,379.77</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 8
+    }
+   ],
+   "source": [
+    "# Create summary dataframe to use in holding and displaying data\n",
+    "Summary_DF = pd.DataFrame({\n",
+    "    \"Number of Unique Items\": [UniqItemCount], \"Average Price\": [AvgPrice],\n",
+    "    \"Number of Purchases\": [PurchaseCount], \"Total Revenue\": [PurchaseTotal]})\n",
+    "\n",
+    "# Recheck data type\n",
+    "print(Summary_DF.dtypes)\n",
+    "print()\n",
+    "\n",
+    "# Formats \"$\" or \"%\" into dataframe outputs, ie 'Average Price' and 'Total Revenue' here\n",
+    "Summary_DF[\"Average Price\"] = Summary_DF[\"Average Price\"].map(\"${0:,.2f}\".format)\n",
+    "Summary_DF[\"Total Revenue\"] = Summary_DF[\"Total Revenue\"].map(\"${0:,.2f}\".format)\n",
+    "Summary_DF\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "   Number of Unique Items Average Price  Number of Purchases Total Revenue\n",
+       "0                     179         $3.05                  780     $2,379.77"
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Number of Unique Items</th>\n      <th>Average Price</th>\n      <th>Number of Purchases</th>\n      <th>Total Revenue</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>179</td>\n      <td>$3.05</td>\n      <td>780</td>\n      <td>$2,379.77</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 9
+    }
+   ],
+   "source": [
+    "# Ouput of purchase base analysis summary data\n",
+    "Summary_DF"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Gender Demographics"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Percentage and Count of Male Players\n",
+    "\n",
+    "\n",
+    "* Percentage and Count of Female Players\n",
+    "\n",
+    "\n",
+    "* Percentage and Count of Other / Non-Disclosed\n",
+    "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "                       Purchase ID   SN  Age  Item ID  Item Name  Price\n",
+       "Gender                                                                 \n",
+       "Female                         113   81   22       90         90     79\n",
+       "Male                           652  484   39      178        178    144\n",
+       "Other / Non-Disclosed           15   11    8       13         13     12"
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Purchase ID</th>\n      <th>SN</th>\n      <th>Age</th>\n      <th>Item ID</th>\n      <th>Item Name</th>\n      <th>Price</th>\n    </tr>\n    <tr>\n      <th>Gender</th>\n      <th></th>\n      <th></th>\n      <th></th>\n      <th></th>\n      <th></th>\n      <th></th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>Female</th>\n      <td>113</td>\n      <td>81</td>\n      <td>22</td>\n      <td>90</td>\n      <td>90</td>\n      <td>79</td>\n    </tr>\n    <tr>\n      <th>Male</th>\n      <td>652</td>\n      <td>484</td>\n      <td>39</td>\n      <td>178</td>\n      <td>178</td>\n      <td>144</td>\n    </tr>\n    <tr>\n      <th>Other / Non-Disclosed</th>\n      <td>15</td>\n      <td>11</td>\n      <td>8</td>\n      <td>13</td>\n      <td>13</td>\n      <td>12</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 11
+    }
+   ],
+   "source": [
+    "#Create a groupby on  columns \"Gender\" to isolate data\n",
+    "GenderData = purchase_data_df.groupby([\"Gender\"])\n",
+    "GenderData.nunique()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Assigning variable to hold count, uniques/actual numbers of people in sample, and percentage of specific genders represented\n",
+    "GenderCount = GenderData[\"SN\"].nunique()\n",
+    "AllGenders = UniqPlayers\n",
+    "GenderPercentage = round(((GenderCount / AllGenders) * 100), 2)\n",
+    "\n",
+    "\n",
+    "# Create dataframe summary to hold Gender-based data\n",
+    "GenderSummary_DF = pd.DataFrame({\"Total Count\": GenderCount, \"Percentage of Players\": GenderPercentage})\n",
+    "\n",
+    "# Borrowing from previously used purchase analysis code for formatting\n",
+    "GenderSummary_DF[\"Percentage of Players\"] = GenderSummary_DF[\"Percentage of Players\"].map(\"{0:.2F} %\".format)\n",
+    "GenderSummary_DF = GenderSummary_DF.sort_values(by=\"Total Count\", ascending=False)\n",
+    "#GenderSummary_DF"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "                       Total Count Percentage of Players\n",
+       "Gender                                                  \n",
+       "Male                           484               84.03 %\n",
+       "Female                          81               14.06 %\n",
+       "Other / Non-Disclosed           11                1.91 %"
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Total Count</th>\n      <th>Percentage of Players</th>\n    </tr>\n    <tr>\n      <th>Gender</th>\n      <th></th>\n      <th></th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>Male</th>\n      <td>484</td>\n      <td>84.03 %</td>\n    </tr>\n    <tr>\n      <th>Female</th>\n      <td>81</td>\n      <td>14.06 %</td>\n    </tr>\n    <tr>\n      <th>Other / Non-Disclosed</th>\n      <td>11</td>\n      <td>1.91 %</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 13
+    }
+   ],
+   "source": [
+    "# Gender Summary dataframe output\n",
+    "GenderSummary_DF"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "## Purchasing Analysis (Gender)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Run basic calculations to obtain purchase count, avg. purchase price, avg. purchase total per person etc. by gender\n",
+    "\n",
+    "\n",
+    "\n",
+    "\n",
+    "* Create a summary data frame to hold the results\n",
+    "\n",
+    "\n",
+    "* Optional: give the displayed data cleaner formatting\n",
+    "\n",
+    "\n",
+    "* Display the summary data frame"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Reusing/initializing the variables created above for reference and coding moving forward\n",
+    "# CODE LIST\n",
+    "\n",
+    "# Unique Gendered Individuals (81 Female, 484 Men, 11 Other)\n",
+    "#GenderCount = GenderData[\"SN\"].nunique()\n",
+    "#print(\"GenderCount\")\n",
+    "#print(GenderCount)\n",
+    "#print()\n",
+    "\n",
+    "# Original dataframe grouped by \"Gender\" column\n",
+    "#GenderData = purchase_data_df.groupby([\"Gender\"])\n",
+    "#GenderData.nunique()\n",
+    "#print(\"GenderData \")\n",
+    "#print(GenderData.nunique())\n",
+    "#print()\n",
+    "# ----------------------------------------------------------\n",
+    "\n",
+    "# TESTING NEW CODE FOR VARIABLES OUTPUTS BELOW\n",
+    "\n",
+    "# Gender Purchase Count\n",
+    "#GenderPurchase = GenderData[\"Price\"].count()\n",
+    "#print(\"GenderPurchase\")\n",
+    "#print(GenderPurchase)\n",
+    "#print()\n",
+    "\n",
+    "# Average Purchase Price (by Gender)\n",
+    "#GenderAveragePrice = round(GenderData[\"Price\"].mean(),2)\n",
+    "#print(\"GenderAveragePrice\")\n",
+    "#print(GenderAveragePrice)\n",
+    "#print()\n",
+    "\n",
+    "# Total Purchase Value (by Gender)\n",
+    "#AllGendersTotal = GenderData[\"Price\"].sum()\n",
+    "#print(\"AllGendersTotal\")\n",
+    "#print(AllGendersTotal)\n",
+    "#print()\n",
+    "\n",
+    "# Average Purchase Total Per Person (by Gender)\n",
+    "#AverageGendersTotal = round((AllGendersTotal / GenderCount),2)\n",
+    "#print(\"AverageGendersTotal\")\n",
+    "#print(AverageGendersTotal)\n",
+    "#print()\n",
+    "\n",
+    "# ----------------------------------------------------------\n",
+    "# Reused Old code for reference and reinitialization\n",
+    "GenderData = purchase_data_df.groupby([\"Gender\"])\n",
+    "GenderCount = GenderData[\"SN\"].nunique()\n",
+    "\n",
+    "# New Code for Gender Purchase Analysis (based on previous base purchase analysis code)\n",
+    "GenderPurchase = GenderData[\"Price\"].count()\n",
+    "GenderAveragePrice = round(GenderData[\"Price\"].mean(),2)\n",
+    "AllGendersTotal = GenderData[\"Price\"].sum()\n",
+    "AverageGendersTotal = round((AllGendersTotal / GenderCount),2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Create new Dataframe summary and columns\n",
+    "GenderPurchaseAnalyis_DF = pd.DataFrame({\"Purchase Count\":GenderPurchase, \"Average Purchase Price\":GenderAveragePrice, \"Total Purchase Value\":AllGendersTotal, \"Avg Total Purchase per Person\":AverageGendersTotal})\n",
+    "\n",
+    "\n",
+    "# Formatting dataframe columns via '.map(\"${0:,.2f}\".format)'\n",
+    "GenderPurchaseAnalyis_DF[\"Average Purchase Price\"] = GenderPurchaseAnalyis_DF[\"Average Purchase Price\"].map(\"${0:,.2f}\".format)\n",
+    "GenderPurchaseAnalyis_DF[\"Total Purchase Value\"] = GenderPurchaseAnalyis_DF[\"Total Purchase Value\"].map(\"${0:,.2f}\".format)\n",
+    "GenderPurchaseAnalyis_DF[\"Avg Total Purchase per Person\"] = GenderPurchaseAnalyis_DF[\"Avg Total Purchase per Person\"].map(\"${0:,.2f}\".format)\n",
+    "\n",
+    "# Display Summary\n",
+    "#GenderPurchaseAnalyis_DF"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "                       Purchase Count Average Purchase Price  \\\n",
+       "Gender                                                         \n",
+       "Female                            113                  $3.20   \n",
+       "Male                              652                  $3.02   \n",
+       "Other / Non-Disclosed              15                  $3.35   \n",
+       "\n",
+       "                      Total Purchase Value Avg Total Purchase per Person  \n",
+       "Gender                                                                    \n",
+       "Female                             $361.94                         $4.47  \n",
+       "Male                             $1,967.64                         $4.07  \n",
+       "Other / Non-Disclosed               $50.19                         $4.56  "
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Purchase Count</th>\n      <th>Average Purchase Price</th>\n      <th>Total Purchase Value</th>\n      <th>Avg Total Purchase per Person</th>\n    </tr>\n    <tr>\n      <th>Gender</th>\n      <th></th>\n      <th></th>\n      <th></th>\n      <th></th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>Female</th>\n      <td>113</td>\n      <td>$3.20</td>\n      <td>$361.94</td>\n      <td>$4.47</td>\n    </tr>\n    <tr>\n      <th>Male</th>\n      <td>652</td>\n      <td>$3.02</td>\n      <td>$1,967.64</td>\n      <td>$4.07</td>\n    </tr>\n    <tr>\n      <th>Other / Non-Disclosed</th>\n      <td>15</td>\n      <td>$3.35</td>\n      <td>$50.19</td>\n      <td>$4.56</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 16
+    }
+   ],
+   "source": [
+    "# Display Summary\n",
+    "GenderPurchaseAnalyis_DF"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Age Demographics"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Establish bins for ages\n",
+    "\n",
+    "\n",
+    "* Categorize the existing players using the age bins. Hint: use pd.cut()\n",
+    "\n",
+    "\n",
+    "* Calculate the numbers and percentages by age group\n",
+    "\n",
+    "\n",
+    "* Create a summary data frame to hold the results\n",
+    "\n",
+    "\n",
+    "* Optional: round the percentage column to two decimal points\n",
+    "\n",
+    "\n",
+    "* Display Age Demographics Table\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "   Purchase ID             SN  Age Gender  Item ID  \\\n",
+       "0            0        Lisim78   20   Male      108   \n",
+       "1            1    Lisovynya38   40   Male      143   \n",
+       "2            2     Ithergue48   24   Male       92   \n",
+       "3            3  Chamassasya86   24   Male      100   \n",
+       "4            4      Iskosia90   23   Male      131   \n",
+       "\n",
+       "                                   Item Name  Price  \n",
+       "0  Extraction, Quickblade Of Trembling Hands   3.53  \n",
+       "1                          Frenzied Scimitar   1.56  \n",
+       "2                               Final Critic   4.88  \n",
+       "3                                Blindscythe   3.27  \n",
+       "4                                       Fury   1.44  "
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Purchase ID</th>\n      <th>SN</th>\n      <th>Age</th>\n      <th>Gender</th>\n      <th>Item ID</th>\n      <th>Item Name</th>\n      <th>Price</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>0</td>\n      <td>Lisim78</td>\n      <td>20</td>\n      <td>Male</td>\n      <td>108</td>\n      <td>Extraction, Quickblade Of Trembling Hands</td>\n      <td>3.53</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>1</td>\n      <td>Lisovynya38</td>\n      <td>40</td>\n      <td>Male</td>\n      <td>143</td>\n      <td>Frenzied Scimitar</td>\n      <td>1.56</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>2</td>\n      <td>Ithergue48</td>\n      <td>24</td>\n      <td>Male</td>\n      <td>92</td>\n      <td>Final Critic</td>\n      <td>4.88</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>3</td>\n      <td>Chamassasya86</td>\n      <td>24</td>\n      <td>Male</td>\n      <td>100</td>\n      <td>Blindscythe</td>\n      <td>3.27</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>4</td>\n      <td>Iskosia90</td>\n      <td>23</td>\n      <td>Male</td>\n      <td>131</td>\n      <td>Fury</td>\n      <td>1.44</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 14
+    }
+   ],
+   "source": [
+    "# Reference for the original DF values/columns names\n",
+    "purchase_data_df.head()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "['< 10', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40+']"
+      ]
+     },
+     "metadata": {},
+     "execution_count": 17
+    }
+   ],
+   "source": [
+    "# Establish bins and age ranges\n",
+    "Bins = [0, 9.99, 14.99, 19.99, 24.99, 29.99, 34.99, 39.99, 9999.99]\n",
+    "Demo = [\"< 10\" , \"10-14\" , \"15-19\" , \"20-24\" ,\"25-29\" , \"30-34\" ,\"35-39\" , \"40+\"]\n",
+    "Demo"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Create Groupby and new column via pd.cut on \"Age\"\n",
+    "purchase_data_df[\"Age Ranges\"] = pd.cut(purchase_data_df[\"Age\"], Bins, labels=Demo)\n",
+    "GroupByAge = purchase_data_df.groupby(\"Age Ranges\")\n",
+    "\n",
+    "# To get unique counts of players age (with bin data sorting applied)\n",
+    "UniqAges = GroupByAge[\"SN\"].nunique()\n",
+    "#UniqAges\n",
+    "\n",
+    "# The number of actual (unique) players \n",
+    "AgeRangeCount = purchase_data_df[\"SN\"].nunique()\n",
+    "#AgeRangeCount\n",
+    "\n",
+    "# Calculate the % of Age Ranges tha are represented overall\n",
+    "AgeRangePercentage = round(((UniqAges / AgeRangeCount) * 100),2)\n",
+    "#AgeRangePercentage"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Create summary dataframe for bin data\n",
+    "BinAge_Summary = pd.DataFrame({\"Total Count\": UniqAges, \"Percentage of Players\": AgeRangePercentage})\n",
+    "BinAge_Summary[\"Percentage of Players\"] = BinAge_Summary[\"Percentage of Players\"].map(\"{:.2f} %\".format)\n",
+    "#BinAge_Summary"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "            Total Count Percentage of Players\n",
+       "Age Ranges                                   \n",
+       "< 10                 17                2.95 %\n",
+       "10-14                22                3.82 %\n",
+       "15-19               107               18.58 %\n",
+       "20-24               258               44.79 %\n",
+       "25-29                77               13.37 %\n",
+       "30-34                52                9.03 %\n",
+       "35-39                31                5.38 %\n",
+       "40+                  12                2.08 %"
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Total Count</th>\n      <th>Percentage of Players</th>\n    </tr>\n    <tr>\n      <th>Age Ranges</th>\n      <th></th>\n      <th></th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>&lt; 10</th>\n      <td>17</td>\n      <td>2.95 %</td>\n    </tr>\n    <tr>\n      <th>10-14</th>\n      <td>22</td>\n      <td>3.82 %</td>\n    </tr>\n    <tr>\n      <th>15-19</th>\n      <td>107</td>\n      <td>18.58 %</td>\n    </tr>\n    <tr>\n      <th>20-24</th>\n      <td>258</td>\n      <td>44.79 %</td>\n    </tr>\n    <tr>\n      <th>25-29</th>\n      <td>77</td>\n      <td>13.37 %</td>\n    </tr>\n    <tr>\n      <th>30-34</th>\n      <td>52</td>\n      <td>9.03 %</td>\n    </tr>\n    <tr>\n      <th>35-39</th>\n      <td>31</td>\n      <td>5.38 %</td>\n    </tr>\n    <tr>\n      <th>40+</th>\n      <td>12</td>\n      <td>2.08 %</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 20
+    }
+   ],
+   "source": [
+    "# Bin dataframe summary\n",
+    "BinAge_Summary"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Purchasing Analysis (Age)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Bin the purchase_data data frame by age\n",
+    "\n",
+    "\n",
+    "* Run basic calculations to obtain purchase count, avg. purchase price, avg. purchase total per person etc. in the table below\n",
+    "\n",
+    "\n",
+    "* Create a summary data frame to hold the results\n",
+    "\n",
+    "\n",
+    "* Optional: give the displayed data cleaner formatting\n",
+    "\n",
+    "\n",
+    "* Display the summary data frame"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "   Purchase ID             SN  Age Gender  Item ID  \\\n",
+       "0            0        Lisim78   20   Male      108   \n",
+       "1            1    Lisovynya38   40   Male      143   \n",
+       "2            2     Ithergue48   24   Male       92   \n",
+       "3            3  Chamassasya86   24   Male      100   \n",
+       "4            4      Iskosia90   23   Male      131   \n",
+       "\n",
+       "                                   Item Name  Price Age Ranges  \n",
+       "0  Extraction, Quickblade Of Trembling Hands   3.53      20-24  \n",
+       "1                          Frenzied Scimitar   1.56        40+  \n",
+       "2                               Final Critic   4.88      20-24  \n",
+       "3                                Blindscythe   3.27      20-24  \n",
+       "4                                       Fury   1.44      20-24  "
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Purchase ID</th>\n      <th>SN</th>\n      <th>Age</th>\n      <th>Gender</th>\n      <th>Item ID</th>\n      <th>Item Name</th>\n      <th>Price</th>\n      <th>Age Ranges</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>0</td>\n      <td>Lisim78</td>\n      <td>20</td>\n      <td>Male</td>\n      <td>108</td>\n      <td>Extraction, Quickblade Of Trembling Hands</td>\n      <td>3.53</td>\n      <td>20-24</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>1</td>\n      <td>Lisovynya38</td>\n      <td>40</td>\n      <td>Male</td>\n      <td>143</td>\n      <td>Frenzied Scimitar</td>\n      <td>1.56</td>\n      <td>40+</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>2</td>\n      <td>Ithergue48</td>\n      <td>24</td>\n      <td>Male</td>\n      <td>92</td>\n      <td>Final Critic</td>\n      <td>4.88</td>\n      <td>20-24</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>3</td>\n      <td>Chamassasya86</td>\n      <td>24</td>\n      <td>Male</td>\n      <td>100</td>\n      <td>Blindscythe</td>\n      <td>3.27</td>\n      <td>20-24</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>4</td>\n      <td>Iskosia90</td>\n      <td>23</td>\n      <td>Male</td>\n      <td>131</td>\n      <td>Fury</td>\n      <td>1.44</td>\n      <td>20-24</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 21
+    }
+   ],
+   "source": [
+    "# Reestablishing bins and age ranges\n",
+    "Bins = [0, 9.99, 14.99, 19.99, 24.99, 29.99, 34.99, 39.99, 9999.99]\n",
+    "Demo = [\"< 10\" , \"10-14\" , \"15-19\" , \"20-24\" ,\"25-29\" , \"30-34\" ,\"35-39\" , \"40+\"]\n",
+    "\n",
+    "# Reference for the original DF values\n",
+    "purchase_data_df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Reusing original Purchase Analyis code (above) to reinitialize values now under \"PA\" suffix\n",
+    "# Reuse Groupby and Age Range column via pd.cut on \"Age\"\n",
+    "purchase_data_df[\"Age Ranges\"] = pd.cut(purchase_data_df[\"Age\"], Bins, labels=Demo)\n",
+    "GroupByAge = purchase_data_df.groupby(\"Age Ranges\")\n",
+    "\n",
+    "# Purchase Count\n",
+    "PurchaseCountPA = GroupByAge[\"Purchase ID\"].count()\n",
+    "#PurchaseCountPA\n",
+    "\n",
+    "# Average Purchase Price\n",
+    "AvgPricePA = round(GroupByAge[\"Price\"].mean(),2)\n",
+    "#AvgPricePA\n",
+    "\n",
+    "# Total Purchase Value\n",
+    "PurchaseTotalPA = GroupByAge[\"Price\"].sum()\n",
+    "#PurchaseTotalPA\n",
+    "\n",
+    "# Avg Total Purchase Per Person\n",
+    "GenderCountPA = GroupByAge[\"SN\"].nunique()\n",
+    "AllGendersTotalPA = GroupByAge[\"Price\"].sum()\n",
+    "AverageGendersTotalPA = round((AllGendersTotalPA / GenderCountPA),2)\n",
+    "#AverageGendersTotalPA"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Repurposed the 'GenderPurchaseAnalyis_DF' summary code to create this\n",
+    "BinPurchaseAnalyis_DF = pd.DataFrame({\"Purchase Count\":PurchaseCountPA, \"Average Purchase Price\":AvgPricePA, \"Total Purchase Value\":PurchaseTotalPA, \"Avg Total Purchase per Person\":AverageGendersTotalPA})\n",
+    "\n",
+    "\n",
+    "# .map(\"${0:,.2f}\".format)\n",
+    "BinPurchaseAnalyis_DF[\"Average Purchase Price\"] = BinPurchaseAnalyis_DF[\"Average Purchase Price\"].map(\"${0:,.2f}\".format)\n",
+    "BinPurchaseAnalyis_DF[\"Total Purchase Value\"] = BinPurchaseAnalyis_DF[\"Total Purchase Value\"].map(\"${0:,.2f}\".format)\n",
+    "BinPurchaseAnalyis_DF[\"Avg Total Purchase per Person\"] = BinPurchaseAnalyis_DF[\"Avg Total Purchase per Person\"].map(\"${0:,.2f}\".format)\n",
+    "#BinPurchaseAnalyis_DF"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "            Purchase Count Average Purchase Price Total Purchase Value  \\\n",
+       "Age Ranges                                                               \n",
+       "< 10                    23                  $3.35               $77.13   \n",
+       "10-14                   28                  $2.96               $82.78   \n",
+       "15-19                  136                  $3.04              $412.89   \n",
+       "20-24                  365                  $3.05            $1,114.06   \n",
+       "25-29                  101                  $2.90              $293.00   \n",
+       "30-34                   73                  $2.93              $214.00   \n",
+       "35-39                   41                  $3.60              $147.67   \n",
+       "40+                     13                  $2.94               $38.24   \n",
+       "\n",
+       "           Avg Total Purchase per Person  \n",
+       "Age Ranges                                \n",
+       "< 10                               $4.54  \n",
+       "10-14                              $3.76  \n",
+       "15-19                              $3.86  \n",
+       "20-24                              $4.32  \n",
+       "25-29                              $3.81  \n",
+       "30-34                              $4.12  \n",
+       "35-39                              $4.76  \n",
+       "40+                                $3.19  "
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Purchase Count</th>\n      <th>Average Purchase Price</th>\n      <th>Total Purchase Value</th>\n      <th>Avg Total Purchase per Person</th>\n    </tr>\n    <tr>\n      <th>Age Ranges</th>\n      <th></th>\n      <th></th>\n      <th></th>\n      <th></th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>&lt; 10</th>\n      <td>23</td>\n      <td>$3.35</td>\n      <td>$77.13</td>\n      <td>$4.54</td>\n    </tr>\n    <tr>\n      <th>10-14</th>\n      <td>28</td>\n      <td>$2.96</td>\n      <td>$82.78</td>\n      <td>$3.76</td>\n    </tr>\n    <tr>\n      <th>15-19</th>\n      <td>136</td>\n      <td>$3.04</td>\n      <td>$412.89</td>\n      <td>$3.86</td>\n    </tr>\n    <tr>\n      <th>20-24</th>\n      <td>365</td>\n      <td>$3.05</td>\n      <td>$1,114.06</td>\n      <td>$4.32</td>\n    </tr>\n    <tr>\n      <th>25-29</th>\n      <td>101</td>\n      <td>$2.90</td>\n      <td>$293.00</td>\n      <td>$3.81</td>\n    </tr>\n    <tr>\n      <th>30-34</th>\n      <td>73</td>\n      <td>$2.93</td>\n      <td>$214.00</td>\n      <td>$4.12</td>\n    </tr>\n    <tr>\n      <th>35-39</th>\n      <td>41</td>\n      <td>$3.60</td>\n      <td>$147.67</td>\n      <td>$4.76</td>\n    </tr>\n    <tr>\n      <th>40+</th>\n      <td>13</td>\n      <td>$2.94</td>\n      <td>$38.24</td>\n      <td>$3.19</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 25
+    }
+   ],
+   "source": [
+    "# Bin Purchase Analysis dataframe\n",
+    "BinPurchaseAnalyis_DF"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Top Spenders"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Run basic calculations to obtain the results in the table below\n",
+    "\n",
+    "\n",
+    "* Create a summary data frame to hold the results\n",
+    "\n",
+    "\n",
+    "* Sort the total purchase value column in descending order\n",
+    "\n",
+    "\n",
+    "* Optional: give the displayed data cleaner formatting\n",
+    "\n",
+    "\n",
+    "* Display a preview of the summary data frame\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Reusing code above to reinitialize values under \"TopSpender\" Groupby \n",
+    "# linking groupby to column \"SN\" and using \"TS\" for suffix\n",
+    "# Columns will be:  Purchase Count\tAverage Purchase Price\tTotal Purchase Value again\n",
+    "\n",
+    "TopSpender = purchase_data_df.groupby(\"SN\")\n",
+    "\n",
+    "# Purchase Count\n",
+    "PurchaseCountTS = TopSpender[\"Price\"].count()\n",
+    "#PurchaseCountTS\n",
+    "\n",
+    "# Average Purchase Price\n",
+    "AvgPriceTS = round(TopSpender[\"Price\"].mean(),2)\n",
+    "#AvgPriceTS\n",
+    "\n",
+    "# Total Purchase Value\n",
+    "PurchaseTotalTS = TopSpender[\"Price\"].sum()\n",
+    "#PurchaseTotalTS\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Top Spenders summary\n",
+    "TopSpends_DF = pd.DataFrame({\"Purchase Count\":PurchaseCountTS, \"Average Purchase Price\":AvgPriceTS, \"Total Purchase Value\":PurchaseTotalTS})\n",
+    "TopSpends_DF = TopSpends_DF.sort_values(by=\"Total Purchase Value\", ascending=False)\n",
+    "\n",
+    "# Summary_DF[\"Average Price\"] = Summary_DF[\"Average Price\"].map(\"${0:,.2f}\".format)\n",
+    "TopSpends_DF[\"Average Purchase Price\"] = TopSpends_DF[\"Average Purchase Price\"].map(\"${0:,.2f}\".format)\n",
+    "TopSpends_DF[\"Total Purchase Value\"] = TopSpends_DF[\"Total Purchase Value\"].map(\"${0:,.2f}\".format)\n",
+    "#TopSpends_DF.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "             Purchase Count Average Purchase Price Total Purchase Value\n",
+       "SN                                                                     \n",
+       "Lisosia93                 5                  $3.79               $18.96\n",
+       "Idastidru52               4                  $3.86               $15.45\n",
+       "Chamjask73                3                  $4.61               $13.83\n",
+       "Iral74                    4                  $3.40               $13.62\n",
+       "Iskadarya95               3                  $4.37               $13.10"
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Purchase Count</th>\n      <th>Average Purchase Price</th>\n      <th>Total Purchase Value</th>\n    </tr>\n    <tr>\n      <th>SN</th>\n      <th></th>\n      <th></th>\n      <th></th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>Lisosia93</th>\n      <td>5</td>\n      <td>$3.79</td>\n      <td>$18.96</td>\n    </tr>\n    <tr>\n      <th>Idastidru52</th>\n      <td>4</td>\n      <td>$3.86</td>\n      <td>$15.45</td>\n    </tr>\n    <tr>\n      <th>Chamjask73</th>\n      <td>3</td>\n      <td>$4.61</td>\n      <td>$13.83</td>\n    </tr>\n    <tr>\n      <th>Iral74</th>\n      <td>4</td>\n      <td>$3.40</td>\n      <td>$13.62</td>\n    </tr>\n    <tr>\n      <th>Iskadarya95</th>\n      <td>3</td>\n      <td>$4.37</td>\n      <td>$13.10</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 28
+    }
+   ],
+   "source": [
+    "# Top 5 spenders\n",
+    "TopSpends_DF.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Most Popular Items"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Retrieve the Item ID, Item Name, and Item Price columns\n",
+    "\n",
+    "\n",
+    "* Group by Item ID and Item Name. Perform calculations to obtain purchase count, average item price, and total purchase value\n",
+    "\n",
+    "\n",
+    "* Create a summary data frame to hold the results\n",
+    "\n",
+    "\n",
+    "* Sort the purchase count column in descending order\n",
+    "\n",
+    "\n",
+    "* Optional: give the displayed data cleaner formatting\n",
+    "\n",
+    "\n",
+    "* Display a preview of the summary data frame\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "   Purchase ID             SN  Age Gender  Item ID  \\\n",
+       "0            0        Lisim78   20   Male      108   \n",
+       "1            1    Lisovynya38   40   Male      143   \n",
+       "2            2     Ithergue48   24   Male       92   \n",
+       "3            3  Chamassasya86   24   Male      100   \n",
+       "4            4      Iskosia90   23   Male      131   \n",
+       "\n",
+       "                                   Item Name  Price Age Ranges  \n",
+       "0  Extraction, Quickblade Of Trembling Hands   3.53      20-24  \n",
+       "1                          Frenzied Scimitar   1.56        40+  \n",
+       "2                               Final Critic   4.88      20-24  \n",
+       "3                                Blindscythe   3.27      20-24  \n",
+       "4                                       Fury   1.44      20-24  "
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Purchase ID</th>\n      <th>SN</th>\n      <th>Age</th>\n      <th>Gender</th>\n      <th>Item ID</th>\n      <th>Item Name</th>\n      <th>Price</th>\n      <th>Age Ranges</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>0</td>\n      <td>Lisim78</td>\n      <td>20</td>\n      <td>Male</td>\n      <td>108</td>\n      <td>Extraction, Quickblade Of Trembling Hands</td>\n      <td>3.53</td>\n      <td>20-24</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>1</td>\n      <td>Lisovynya38</td>\n      <td>40</td>\n      <td>Male</td>\n      <td>143</td>\n      <td>Frenzied Scimitar</td>\n      <td>1.56</td>\n      <td>40+</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>2</td>\n      <td>Ithergue48</td>\n      <td>24</td>\n      <td>Male</td>\n      <td>92</td>\n      <td>Final Critic</td>\n      <td>4.88</td>\n      <td>20-24</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>3</td>\n      <td>Chamassasya86</td>\n      <td>24</td>\n      <td>Male</td>\n      <td>100</td>\n      <td>Blindscythe</td>\n      <td>3.27</td>\n      <td>20-24</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>4</td>\n      <td>Iskosia90</td>\n      <td>23</td>\n      <td>Male</td>\n      <td>131</td>\n      <td>Fury</td>\n      <td>1.44</td>\n      <td>20-24</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 29
+    }
+   ],
+   "source": [
+    "# Reference\n",
+    "purchase_data_df.head()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Reusing code above to reinitialize values under \"MostPopular\" Groupby \n",
+    "# linking/groupby two columns: Item ID and Item Name, using \"MP\" as suffix for variables\n",
+    "# # Columns will be:  Purchase Count\tAverage Purchase Price\tTotal Purchase Value again\n",
+    "\n",
+    "MostPopular = purchase_data_df.groupby([\"Item ID\", \"Item Name\"])\n",
+    "#MostPopular\n",
+    "\n",
+    "# Purchase Count\n",
+    "PurchaseCountMP = MostPopular[\"Item ID\"].count()\n",
+    "#PurchaseCountMP\n",
+    "\n",
+    "# Average Purchase Price\n",
+    "AvgPriceMP = round(MostPopular[\"Price\"].mean(),2)\n",
+    "#AvgPriceMP\n",
+    "\n",
+    "# Total Purchase Value\n",
+    "PurchaseTotalMP = (AvgPriceMP * PurchaseCountMP)\n",
+    "#PurchaseTotalMP"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Most popular item summary, reusing old code to keep consistency and efficiency\n",
+    "MostPopularDF = pd.DataFrame({\"Purchase Count\":PurchaseCountMP, \"Item Price\":AvgPriceMP, \"Total Purchase Value\":PurchaseTotalMP})\n",
+    "MostPopularDF[\"Item Price\"]\n",
+    "MostPopularDF = MostPopularDF.sort_values(by=\"Purchase Count\", ascending=False)\n",
+    "\n",
+    "# Summary_DF[\"Average Price\"] = Summary_DF[\"Average Price\"].map(\"${0:,.2f}\".format)\n",
+    "MostPopularDF[\"Item Price\"] = MostPopularDF[\"Item Price\"].map(\"${0:,.2f}\".format)\n",
+    "MostPopularDF[\"Total Purchase Value\"] = MostPopularDF[\"Total Purchase Value\"].map(\"${0:,.2f}\".format)\n",
+    "#MostPopularDF.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "                                                      Purchase Count  \\\n",
+       "Item ID Item Name                                                      \n",
+       "92      Final Critic                                              13   \n",
+       "178     Oathbreaker, Last Hope of the Breaking Storm              12   \n",
+       "145     Fiery Glass Crusader                                       9   \n",
+       "132     Persuasion                                                 9   \n",
+       "108     Extraction, Quickblade Of Trembling Hands                  9   \n",
+       "\n",
+       "                                                     Item Price  \\\n",
+       "Item ID Item Name                                                 \n",
+       "92      Final Critic                                      $4.61   \n",
+       "178     Oathbreaker, Last Hope of the Breaking Storm      $4.23   \n",
+       "145     Fiery Glass Crusader                              $4.58   \n",
+       "132     Persuasion                                        $3.22   \n",
+       "108     Extraction, Quickblade Of Trembling Hands         $3.53   \n",
+       "\n",
+       "                                                     Total Purchase Value  \n",
+       "Item ID Item Name                                                          \n",
+       "92      Final Critic                                               $59.93  \n",
+       "178     Oathbreaker, Last Hope of the Breaking Storm               $50.76  \n",
+       "145     Fiery Glass Crusader                                       $41.22  \n",
+       "132     Persuasion                                                 $28.98  \n",
+       "108     Extraction, Quickblade Of Trembling Hands                  $31.77  "
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th></th>\n      <th>Purchase Count</th>\n      <th>Item Price</th>\n      <th>Total Purchase Value</th>\n    </tr>\n    <tr>\n      <th>Item ID</th>\n      <th>Item Name</th>\n      <th></th>\n      <th></th>\n      <th></th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>92</th>\n      <th>Final Critic</th>\n      <td>13</td>\n      <td>$4.61</td>\n      <td>$59.93</td>\n    </tr>\n    <tr>\n      <th>178</th>\n      <th>Oathbreaker, Last Hope of the Breaking Storm</th>\n      <td>12</td>\n      <td>$4.23</td>\n      <td>$50.76</td>\n    </tr>\n    <tr>\n      <th>145</th>\n      <th>Fiery Glass Crusader</th>\n      <td>9</td>\n      <td>$4.58</td>\n      <td>$41.22</td>\n    </tr>\n    <tr>\n      <th>132</th>\n      <th>Persuasion</th>\n      <td>9</td>\n      <td>$3.22</td>\n      <td>$28.98</td>\n    </tr>\n    <tr>\n      <th>108</th>\n      <th>Extraction, Quickblade Of Trembling Hands</th>\n      <td>9</td>\n      <td>$3.53</td>\n      <td>$31.77</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 32
+    }
+   ],
+   "source": [
+    "# Top 5 Items\n",
+    "# Original readme \"answers\" seem to be slightly off with purchase value totals based on (Item prices* purchase qty)\n",
+    "MostPopularDF.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Most Profitable Items"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* Sort the above table by total purchase value in descending order\n",
+    "\n",
+    "\n",
+    "* Optional: give the displayed data cleaner formatting\n",
+    "\n",
+    "\n",
+    "* Display a preview of the data frame\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Reusing code above, simply changing the sort_values by= to Total Purchase Value and the column Item Price\n",
+    "MostPofitableDF = pd.DataFrame({\"Purchase Count\":PurchaseCountMP, \"Item Price\":AvgPriceMP, \"Total Purchase Value\":PurchaseTotalMP})\n",
+    "MostPofitableDF[\"Item Price\"]\n",
+    "MostPofitableDF = MostPofitableDF.sort_values(by=\"Total Purchase Value\", ascending=False)\n",
+    "\n",
+    "# .map(\"${0:,.2f}\".format)\n",
+    "MostPofitableDF[\"Item Price\"] = MostPofitableDF[\"Item Price\"].map(\"${0:,.2f}\".format)\n",
+    "MostPofitableDF[\"Total Purchase Value\"] = MostPofitableDF[\"Total Purchase Value\"].map(\"${0:,.2f}\".format)\n",
+    "#MostPofitableDF.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": [
+       "                                                      Purchase Count  \\\n",
+       "Item ID Item Name                                                      \n",
+       "92      Final Critic                                              13   \n",
+       "178     Oathbreaker, Last Hope of the Breaking Storm              12   \n",
+       "82      Nirvana                                                    9   \n",
+       "145     Fiery Glass Crusader                                       9   \n",
+       "103     Singed Scalpel                                             8   \n",
+       "\n",
+       "                                                     Item Price  \\\n",
+       "Item ID Item Name                                                 \n",
+       "92      Final Critic                                      $4.61   \n",
+       "178     Oathbreaker, Last Hope of the Breaking Storm      $4.23   \n",
+       "82      Nirvana                                           $4.90   \n",
+       "145     Fiery Glass Crusader                              $4.58   \n",
+       "103     Singed Scalpel                                    $4.35   \n",
+       "\n",
+       "                                                     Total Purchase Value  \n",
+       "Item ID Item Name                                                          \n",
+       "92      Final Critic                                               $59.93  \n",
+       "178     Oathbreaker, Last Hope of the Breaking Storm               $50.76  \n",
+       "82      Nirvana                                                    $44.10  \n",
+       "145     Fiery Glass Crusader                                       $41.22  \n",
+       "103     Singed Scalpel                                             $34.80  "
+      ],
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th></th>\n      <th>Purchase Count</th>\n      <th>Item Price</th>\n      <th>Total Purchase Value</th>\n    </tr>\n    <tr>\n      <th>Item ID</th>\n      <th>Item Name</th>\n      <th></th>\n      <th></th>\n      <th></th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>92</th>\n      <th>Final Critic</th>\n      <td>13</td>\n      <td>$4.61</td>\n      <td>$59.93</td>\n    </tr>\n    <tr>\n      <th>178</th>\n      <th>Oathbreaker, Last Hope of the Breaking Storm</th>\n      <td>12</td>\n      <td>$4.23</td>\n      <td>$50.76</td>\n    </tr>\n    <tr>\n      <th>82</th>\n      <th>Nirvana</th>\n      <td>9</td>\n      <td>$4.90</td>\n      <td>$44.10</td>\n    </tr>\n    <tr>\n      <th>145</th>\n      <th>Fiery Glass Crusader</th>\n      <td>9</td>\n      <td>$4.58</td>\n      <td>$41.22</td>\n    </tr>\n    <tr>\n      <th>103</th>\n      <th>Singed Scalpel</th>\n      <td>8</td>\n      <td>$4.35</td>\n      <td>$34.80</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "metadata": {},
+     "execution_count": 35
+    }
+   ],
+   "source": [
+    "# Top 5 Most Profitable items\n",
+    "MostPofitableDF.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# End of code\n",
+    "# - Ithamar Francois"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Take aways: Based on consumer age data, \"20-24\" were the highest spending group with total sales nearly 3x that of the next age group which was \"15-19\". \"Over 40+\" was the age group that spent the least, despite probably being the age group with the most disposable income. \n",
+    "\n",
+    "# Marketing efforts should probably be focused on the \"15-29\" year old sector as this group is most willing to purchase items. Projected potential for growth (within this population) suggest that women may be a strong option of focus. Even though there were more males in the population and thus had a higher amount of dollars spent, women spent the most per person. \n",
+    "\n",
+    "# More research and marketing may need to be done to people who subscribe under the \"other/Non-Disclosed\" gender. They were the most under represented in population and dollars spent, but other social factors may be highly contributing to that sector not engagaing more. Room for massive potential growth."
+   ]
+  }
+ ],
+ "metadata": {
+  "anaconda-cloud": {},
+  "kernel_info": {
+   "name": "python3"
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.5-final"
+  },
+  "latex_envs": {
+   "LaTeX_envs_menu_present": true,
+   "autoclose": false,
+   "autocomplete": true,
+   "bibliofile": "biblio.bib",
+   "cite_by": "apalike",
+   "current_citInitial": 1,
+   "eqLabelWithNumbers": true,
+   "eqNumInitial": 1,
+   "hotkeys": {
+    "equation": "Ctrl-E",
+    "itemize": "Ctrl-I"
+   },
+   "labels_anchors": false,
+   "latex_user_defs": false,
+   "report_style_numbering": false,
+   "user_envs_cfg": false
+  },
+  "nteract": {
+   "version": "0.2.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
